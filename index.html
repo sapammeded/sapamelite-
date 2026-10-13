@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<title>QR INTEL — Private Sentence QR</title>
+<style>
+:root{--bg:#0b1220;--panel:#111c2e;--panel2:#17243a;--line:#263750;--text:#edf3fb;--muted:#9fb0c8;--blue:#6aa8ff;--green:#56d6a0;--red:#ff7777;--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0b1220,#101a2b 55%,#0b1220);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{padding:20px 16px 14px;position:sticky;top:0;background:#0b1220ee;backdrop-filter:blur(12px);z-index:5;border-bottom:1px solid var(--line)}
+.wrap{max-width:900px;margin:auto}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#6aa8ff,#56d6a0);display:grid;place-items:center;color:#081322;font-size:24px;font-weight:900}.brand h1{font-size:20px;letter-spacing:1.5px;margin:0}.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}
+main{max-width:900px;margin:auto;padding:16px;display:grid;gap:14px}.panel{background:linear-gradient(145deg,#111c2e,#101a2a);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 12px 32px #0002}.panel h2{font-size:17px;margin:0 0 12px}.sub{color:var(--muted);font-size:13px;line-height:1.5}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.stat{background:var(--panel2);padding:12px;border-radius:13px}.stat strong{display:block;font-size:20px}.stat span{font-size:11px;color:var(--muted)}
+label{display:block;font-size:12px;color:#c1cde0;margin:10px 0 6px}input,textarea,select{width:100%;background:#0b1423;color:var(--text);border:1px solid #31445f;border-radius:11px;padding:12px;font:inherit;outline:none}textarea{min-height:150px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:var(--blue)}button,.filebtn{border:0;border-radius:12px;padding:12px 14px;font:600 14px system-ui;cursor:pointer;background:var(--blue);color:#081322;min-height:44px}button.secondary,.filebtn.secondary{background:#23334b;color:var(--text);border:1px solid #344963}button.green{background:var(--green)}button.danger{background:#522a37;color:#ffe2e2;border:1px solid #81404d}button:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.tabs{display:flex;gap:7px;overflow:auto;padding-bottom:2px}.tab{white-space:nowrap;background:#17243a;color:#bdcbe0;border:1px solid #2a3b55}.tab.active{background:#6aa8ff;color:#081322;border-color:#6aa8ff}.view{display:none}.view.active{display:block}.pill{display:inline-block;border:1px solid #344963;border-radius:999px;padding:4px 8px;color:var(--muted);font-size:11px}.item{padding:12px;background:#0c1626;border:1px solid #263750;border-radius:12px;margin-top:8px;display:flex;gap:10px;justify-content:space-between;align-items:flex-start}.item p{white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0 0;color:#c8d4e6;font-size:13px}.item h3{font-size:14px;margin:0}.item small{color:var(--muted)}.item .actions{margin-top:0;justify-content:flex-end}.notice{padding:11px 12px;border-radius:12px;background:#172b36;border:1px solid #285044;color:#c6f5e1;font-size:13px;line-height:1.5}.warn{background:#302519;border-color:#614a2c;color:#ffe2b5}.error{background:#351e29;border-color:#6e3547;color:#ffd7df}.hidden{display:none!important}#qrOutput{background:#fff;border-radius:14px;min-height:80px;display:grid;place-items:center;padding:16px;margin-top:12px;color:#111}#qrOutput canvas,#qrOutput img{max-width:100%;height:auto!important}#scanVideo{width:100%;max-height:320px;background:#05080e;border-radius:14px;object-fit:cover}#resultText{min-height:180px}.footer{color:var(--muted);font-size:11px;text-align:center;padding:8px 16px 28px;line-height:1.6}
+@media(min-width:720px){main{grid-template-columns:1fr 1fr}.full{grid-column:1/-1}}@media(max-width:420px){.grid{grid-template-columns:1fr}.stats strong{font-size:17px}.panel{padding:13px}header{padding:16px 13px 12px}main{padding:12px}}
+</style>
+</head>
+<body>
+<header><div class="wrap brand"><div class="logo">⌗</div><div><h1>QR INTEL</h1><p>PRIVATE SENTENCE QR SYSTEM · V1 LOCAL-FIRST</p></div></div></header>
+<main>
+<section class="panel full">
+  <div class="stats"><div class="stat"><strong id="countSentences">0</strong><span>PAKET KALIMAT</span></div><div class="stat"><strong id="countChars">0</strong><span>TOTAL KARAKTER</span></div><div class="stat"><strong id="storageState">Offline</strong><span>PENYIMPANAN</span></div></div>
+  <p class="sub">Data disimpan di perangkat ini. Untuk membagikan ke perangkat personil lain tanpa biaya layanan, ekspor paket resmi lalu impor ke perangkat mereka. Sinkronisasi cloud otomatis belum diaktifkan pada build ini.</p>
+</section>
+<section class="panel full">
+  <div class="tabs">
+    <button class="tab active" data-tab="admin">Admin / Kalimat</button>
+    <button class="tab" data-tab="make">Buat QR</button>
+    <button class="tab" data-tab="scan">Scan QR</button>
+    <button class="tab" data-tab="backup">Backup / Transfer</button>
+  </div>
+</section>
+
+<section id="view-admin" class="panel view active">
+<h2>Tambah kumpulan kalimat</h2>
+<p class="sub">Masukkan satu kalimat per baris. Semua baris akan digabung sebagai satu paket yang dapat disalin sekaligus.</p>
+<label for="packTitle">Nama paket</label><input id="packTitle" maxlength="100" placeholder="Contoh: Laporan patroli — Area A">
+<label for="packCategory">Kategori</label><select id="packCategory"><option>Patroli</option><option>Temuan</option><option>Serah Terima</option><option>Kendaraan</option><option>Keamanan</option><option>Umum</option><option>Lainnya</option></select>
+<label for="packText">Kalimat (satu per baris)</label><textarea id="packText" placeholder="Pemeriksaan area telah dilaksanakan.&#10;Tidak ditemukan kondisi yang menonjol.&#10;Area dinyatakan aman dan terkendali."></textarea>
+<div class="actions"><button id="savePack">Simpan Paket</button><button class="secondary" id="clearForm">Bersihkan</button></div>
+<div id="adminMsg" class="sub" aria-live="polite"></div>
+<h2 style="margin-top:22px">Paket tersimpan</h2>
+<label for="searchPack">Cari paket</label><input id="searchPack" placeholder="Cari nama, kategori, atau isi...">
+<div id="packList"></div>
+</section>
+
+<section id="view-make" class="panel view">
+<h2>Generator QR khusus</h2>
+<p class="sub">QR hanya berisi ID paket acak dan checksum, bukan teks kalimat. Scanner umum mungkin menampilkan kode ID tersebut, tetapi tidak langsung menampilkan isi kalimat.</p>
+<label for="qrSelect">Pilih paket</label><select id="qrSelect"></select>
+<div class="actions"><button id="generateQr">Generate QR</button><button class="secondary" id="downloadQr" disabled>Unduh PNG</button><button class="secondary" id="printQr" disabled>Cetak</button></div>
+<div id="qrOutput">QR akan tampil di sini</div>
+<div id="qrInfo" class="sub"></div>
+<div class="notice warn" style="margin-top:12px">QR ID bukan enkripsi atau autentikasi kuat. Jika paket tidak ada di perangkat personil, QR tidak akan membuka konten sampai paketnya diimpor atau disinkronkan.</div>
+</section>
+
+<section id="view-scan" class="panel view">
+<h2>Scanner internal</h2>
+<p class="sub">Arahkan kamera ke QR yang dibuat QR INTEL. Izin kamera mungkin memerlukan HTTPS (misalnya saat aplikasi di-host di GitHub Pages).</p>
+<div class="actions"><button id="startCamera">Aktifkan Kamera</button><button class="secondary" id="stopCamera" disabled>Matikan Kamera</button><label class="filebtn secondary" for="qrImage" style="margin:0;display:inline-flex;align-items:center">Pilih Gambar QR</label><input id="qrImage" type="file" accept="image/*" class="hidden"></div>
+<video id="scanVideo" class="hidden" playsinline muted></video>
+<canvas id="scanCanvas" class="hidden"></canvas>
+<div id="scanMsg" class="sub" aria-live="polite" style="margin-top:10px"></div>
+<label for="manualCode">Atau masukkan kode QR secara manual</label><input id="manualCode" placeholder="QRI1:...">
+<div class="actions"><button id="openCode">Periksa Kode</button></div>
+<div id="resultBox" class="hidden">
+  <label for="resultTitle">Nama paket</label><input id="resultTitle" readonly>
+  <label for="resultText">Isi lengkap</label><textarea id="resultText" readonly></textarea>
+  <div class="actions"><button class="green" id="copyAll">SALIN SEMUA</button><button class="secondary" id="copyTitle">Salin Nama Paket</button></div>
+  <div id="copyMsg" class="sub" aria-live="polite"></div>
+</div>
+</section>
+
+<section id="view-backup" class="panel view">
+<h2>Backup, restore, dan transfer</h2>
+<p class="sub">Ekspor file JSON untuk memindahkan paket ke HP personil. Impor akan menggabungkan paket berdasarkan ID dan meminta konfirmasi jika ada ID yang sama.</p>
+<div class="actions"><button id="exportBackup">Ekspor Paket JSON</button><label class="filebtn secondary" for="importFile" style="margin:0;display:inline-flex;align-items:center">Impor Paket JSON</label><input id="importFile" type="file" accept=".json,application/json" class="hidden"></div>
+<div id="backupMsg" class="sub" aria-live="polite" style="margin-top:10px"></div>
+<div class="notice" style="margin-top:12px">Saran operasional: admin membuat paket → ekspor JSON → kirim melalui saluran internal → personil impor → scan QR. Simpan file cadangan di lokasi aman.</div>
+<h2 style="margin-top:22px">Administrasi lokal</h2>
+<p class="sub">Mode admin lokal hanya untuk mengurangi perubahan tidak sengaja. PIN yang disimpan di browser bukan kontrol keamanan kuat dan tidak boleh dianggap sebagai autentikasi organisasi.</p>
+<label for="adminPin">PIN admin lokal (opsional)</label><input id="adminPin" type="password" inputmode="numeric" maxlength="12" placeholder="Buat PIN di perangkat ini">
+<div class="actions"><button id="setPin" class="secondary">Simpan PIN lokal</button><button id="unlockAdmin" class="secondary">Buka Mode Admin</button></div>
+<div id="pinMsg" class="sub" aria-live="polite"></div>
+</section>
+
+<section class="panel full">
+<h2>Catatan keamanan</h2>
+<ul class="sub" style="padding-left:20px;line-height:1.7">
+<li>QR berisi ID acak, bukan teks kalimat secara langsung.</li>
+<li>Konten di browser tetap dapat diakses oleh orang yang menguasai perangkat atau memodifikasi aplikasi.</li>
+<li>PIN lokal tidak setara dengan login aman di server.</li>
+<li>Untuk sinkronisasi bersama dan pencabutan akses yang tepercaya, tambahkan backend gratis dengan autentikasi dan aturan akses server. Paket gratis dapat berubah dan tidak dijamin selamanya.</li>
+<li>Library QR dimuat dari CDN saat online. QR generator dan scanner gambar membutuhkan library tersebut; setelah library berhasil dimuat, data paket tetap disimpan lokal. Kamera memerlukan dukungan browser.</li>
+</ul>
+</section>
+</main>
+<div class="footer">QR INTEL V1 · Target biaya layanan Rp0 · Simpan backup berkala · Tidak mengirim data kalimat ke server pada build ini.</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script>
+(()=> {
+'use strict';
+const DB_NAME='qr_intel_v1_db', STORE='packs', DB_VERSION=1;
+let db=null, stream=null, scanLoop=null, currentQrCode='', currentPackId='', adminUnlocked=true;
+const $=id=>document.getElementById(id);
+const status=(id,msg,cls='')=>{const e=$(id);e.textContent=msg;e.className='sub '+cls;};
+function openDB(){return new Promise((resolve,reject)=>{if(!('indexedDB' in window)){reject(new Error('IndexedDB tidak tersedia'));return;}const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains(STORE)){const s=d.createObjectStore(STORE,{keyPath:'id'});s.createIndex('updatedAt','updatedAt');}};req.onsuccess=()=>{db=req.result;resolve(db)};req.onerror=()=>reject(req.error||new Error('Gagal membuka database'));});}
+function allPacks(){return new Promise((resolve,reject)=>{const r=db.transaction(STORE,'readonly').objectStore(STORE).getAll();r.onsuccess=()=>resolve(r.result||[]);r.onerror=()=>reject(r.error)});}
+function putPack(p){return new Promise((resolve,reject)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).put(p);t.oncomplete=()=>resolve();t.onerror=()=>reject(t.error);});}
+function delPack(id){return new Promise((resolve,reject)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).delete(id);t.oncomplete=()=>resolve();t.onerror=()=>reject(t.error);});}
+function uid(){return 'QRI-'+Array.from(crypto.getRandomValues(new Uint8Array(12))).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();}
+async function checksum(s){const data=new TextEncoder().encode(s);if(crypto.subtle){const hash=await crypto.subtle.digest('SHA-256',data);return Array.from(new Uint8Array(hash)).slice(0,8).map(x=>x.toString(16).padStart(2,'0')).join('');}let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(16);}
+async function qrPayload(p){const base='QRI1|'+p.id;return 'QRI1:'+p.id+':'+await checksum(base);}
+async function parseCode(code){const m=String(code||'').trim().match(/^QRI1:(QRI-[A-F0-9]{24}):([a-f0-9]{8,16})$/i);if(!m)throw new Error('Format QR tidak dikenal. Gunakan QR resmi QR INTEL.');const expected=await checksum('QRI1|'+m[1].toUpperCase());if(expected.toLowerCase()!==m[2].toLowerCase())throw new Error('Checksum tidak cocok. Kode rusak atau diubah.');const p=(await allPacks()).find(x=>x.id===m[1].toUpperCase());if(!p)throw new Error('Paket ini belum ada di perangkat. Impor paket JSON resmi dari admin terlebih dahulu.');return p;}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function setTab(tab){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+tab));}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
+async function render(){const packs=await allPacks();$('countSentences').textContent=packs.length;$('countChars').textContent=packs.reduce((n,p)=>n+(p.text||'').length,0).toLocaleString('id-ID');$('storageState').textContent='Lokal';const term=$('searchPack').value.trim().toLowerCase();const shown=packs.filter(p=>!term||[p.title,p.category,p.text].join(' ').toLowerCase().includes(term)).sort((a,b)=>b.updatedAt-a.updatedAt);$('packList').innerHTML=shown.length?shown.map(p=>`<div class="item"><div style="min-width:0;flex:1"><h3>${escapeHtml(p.title)}</h3><small>${escapeHtml(p.category)} · ${p.lines.length} baris · ${new Date(p.updatedAt).toLocaleString('id-ID')}</small><p>${escapeHtml(p.text.slice(0,180))}${p.text.length>180?'…':''}</p></div><div class="actions"><button class="secondary edit" data-id="${p.id}">Edit</button><button class="danger delete" data-id="${p.id}">Hapus</button></div></div>`).join(''):'<p class="sub">Belum ada paket. Tambahkan kalimat pertama di atas.</p>';
+$('qrSelect').innerHTML=packs.map(p=>`<option value="${p.id}">${escapeHtml(p.title)} (${escapeHtml(p.category)})</option>`).join('');if(!packs.length)$('qrSelect').innerHTML='<option value="">Belum ada paket</option>';
+document.querySelectorAll('.edit').forEach(b=>b.onclick=()=>editPack(b.dataset.id));document.querySelectorAll('.delete').forEach(b=>b.onclick=()=>deletePack(b.dataset.id));
+}
+async function editPack(id){const p=(await allPacks()).find(x=>x.id===id);if(!p)return;$('packTitle').value=p.title;$('packCategory').value=p.category;$('packText').value=p.text;$('savePack').dataset.editId=p.id;$('savePack').textContent='Simpan Perubahan';setTab('admin');window.scrollTo({top:0,behavior:'smooth'});}
+async function deletePack(id){const p=(await allPacks()).find(x=>x.id===id);if(!p||!confirm(`Hapus paket "${p.title}" dari perangkat ini?`))return;await delPack(id);if(currentPackId===id){$('qrOutput').textContent='QR akan tampil di sini';$('downloadQr').disabled=true;$('printQr').disabled=true;}await render();}
+$('savePack').onclick=async()=>{const title=$('packTitle').value.trim(),category=$('packCategory').value,text=$('packText').value.trim();if(!title||!text){status('adminMsg','Nama paket dan isi kalimat wajib diisi.','error');return;}const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(!lines.length){status('adminMsg','Masukkan setidaknya satu kalimat.','error');return;}const editId=$('savePack').dataset.editId;const old=editId?(await allPacks()).find(p=>p.id===editId):null;const p={id:old?old.id:uid(),title,category,text:lines.join('\n'),lines,createdAt:old?old.createdAt:Date.now(),updatedAt:Date.now()};await putPack(p);delete $('savePack').dataset.editId;$('savePack').textContent='Simpan Paket';$('packTitle').value='';$('packText').value='';status('adminMsg',`Paket "${title}" berhasil disimpan di perangkat ini.`);await render();};
+$('clearForm').onclick=()=>{$('packTitle').value='';$('packText').value='';delete $('savePack').dataset.editId;$('savePack').textContent='Simpan Paket';status('adminMsg','Form dibersihkan.');};
+$('searchPack').addEventListener('input',render);
+$('generateQr').onclick=async()=>{const id=$('qrSelect').value;if(!id){status('qrInfo','Simpan atau impor paket terlebih dahulu.','error');return;}const p=(await allPacks()).find(x=>x.id===id);if(!p)return;if(typeof QRCode==='undefined'){status('qrInfo','Library QR belum tersedia. Hubungkan internet lalu muat ulang halaman.','error');return;}currentQrCode=await qrPayload(p);currentPackId=p.id;$('qrOutput').innerHTML='';new QRCode($('qrOutput'),{text:currentQrCode,width:240,height:240,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});$('qrInfo').textContent=`Paket: ${p.title} · Kode QR berisi ID, bukan kalimat. ${currentQrCode}`;$('downloadQr').disabled=false;$('printQr').disabled=false;};
+$('downloadQr').onclick=()=>{const img=$('qrOutput').querySelector('img'),canvas=$('qrOutput').querySelector('canvas');let url=img?img.src:canvas?canvas.toDataURL('image/png'):null;if(!url)return;const a=document.createElement('a');a.href=url;a.download='QR-INTEL-'+currentPackId+'.png';a.click();};
+$('printQr').onclick=()=>{const img=$('qrOutput').querySelector('img'),canvas=$('qrOutput').querySelector('canvas');const src=img?img.src:canvas?canvas.toDataURL('image/png'):'';if(!src)return;const w=window.open('','_blank');if(!w){alert('Popup diblokir. Gunakan tombol Unduh PNG.');return;}w.document.write(`<html><head><title>QR INTEL</title></head><body style="font-family:Arial;text-align:center;padding:30px"><h2>QR INTEL</h2><img src="${src}" style="width:260px;height:260px"><p>${escapeHtml(currentPackId)}</p><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();};
+function showResult(p){$('resultBox').classList.remove('hidden');$('resultTitle').value=p.title;$('resultText').value=p.text;status('scanMsg','QR valid. Paket ditemukan di penyimpanan perangkat.');}
+$('openCode').onclick=async()=>{try{const p=await parseCode($('manualCode').value);showResult(p);}catch(e){$('resultBox').classList.add('hidden');status('scanMsg',e.message,'error');}};
+$('copyAll').onclick=async()=>{const text=$('resultText').value;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);}else{const t=$('resultText');t.removeAttribute('readonly');t.select();const ok=document.execCommand('copy');t.setAttribute('readonly','');if(!ok)throw new Error('Salin otomatis tidak didukung. Tekan lama teks lalu pilih Salin.');}status('copyMsg','Semua kalimat berhasil disalin.');}catch(e){status('copyMsg','Tidak dapat menyalin otomatis. Tekan lama teks lalu pilih Salin.','error');}};
+$('copyTitle').onclick=async()=>{try{await navigator.clipboard.writeText($('resultTitle').value);status('copyMsg','Nama paket disalin.')}catch(e){status('copyMsg','Salin nama paket secara manual.','error')}};
+async function stopCamera(){if(scanLoop)cancelAnimationFrame(scanLoop);scanLoop=null;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}$('scanVideo').classList.add('hidden');$('startCamera').disabled=false;$('stopCamera').disabled=true;}
+$('startCamera').onclick=async()=>{if(!navigator.mediaDevices?.getUserMedia){status('scanMsg','Browser ini tidak menyediakan akses kamera. Gunakan Pilih Gambar QR atau browser Android terbaru.','error');return;}if(!('BarcodeDetector'in window)&&typeof jsQR==='undefined'){status('scanMsg','Scanner library belum tersedia. Hubungkan internet lalu muat ulang halaman.','error');return;}try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});$('scanVideo').srcObject=stream;$('scanVideo').classList.remove('hidden');await $('scanVideo').play();$('startCamera').disabled=true;$('stopCamera').disabled=false;status('scanMsg','Kamera aktif. Arahkan ke QR INTEL.');const detector=('BarcodeDetector'in window)?new BarcodeDetector({formats:['qr_code']}):null;const tick=async()=>{if(!stream)return;try{const v=$('scanVideo');if(v.readyState>=2){let code=null;if(detector){const codes=await detector.detect(v);if(codes.length)code=codes[0].rawValue;}else{const c=$('scanCanvas'),ctx=c.getContext('2d',{willReadFrequently:true});c.width=v.videoWidth;c.height=v.videoHeight;ctx.drawImage(v,0,0,c.width,c.height);const im=ctx.getImageData(0,0,c.width,c.height);const hit=jsQR(im.data,im.width,im.height);if(hit)code=hit.data;}if(code){$('manualCode').value=code;await stopCamera();try{showResult(await parseCode(code));}catch(e){status('scanMsg',e.message,'error');}return;}}}catch(e){}scanLoop=requestAnimationFrame(tick);};tick();}catch(e){status('scanMsg','Kamera tidak dapat dibuka. Periksa izin kamera dan gunakan HTTPS. '+e.message,'error');await stopCamera();}};
+$('stopCamera').onclick=stopCamera;
+$('qrImage').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;if(typeof jsQR==='undefined'){status('scanMsg','Library pembaca gambar QR belum tersedia. Hubungkan internet lalu muat ulang.','error');return;}try{const bmp=await createImageBitmap(f);const c=$('scanCanvas'),ctx=c.getContext('2d',{willReadFrequently:true});c.width=bmp.width;c.height=bmp.height;ctx.drawImage(bmp,0,0);const im=ctx.getImageData(0,0,c.width,c.height);const hit=jsQR(im.data,im.width,im.height);if(!hit)throw new Error('QR tidak ditemukan di gambar.');$('manualCode').value=hit.data;showResult(await parseCode(hit.data));}catch(err){status('scanMsg',err.message,'error');}e.target.value='';};
+$('exportBackup').onclick=async()=>{const packs=await allPacks();const data={format:'QR_INTEL_BACKUP',version:1,exportedAt:new Date().toISOString(),packs};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='QR-INTEL-BACKUP-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);status('backupMsg',`${packs.length} paket diekspor. Kirim file ini ke personil melalui saluran yang aman.`);};
+$('importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const data=JSON.parse(await f.text());if(data.format!=='QR_INTEL_BACKUP'||!Array.isArray(data.packs)||data.version!==1)throw new Error('Format backup QR INTEL tidak valid.');let n=0;for(const p of data.packs){if(!p||!/^QRI-[A-F0-9]{24}$/i.test(p.id)||typeof p.title!=='string'||typeof p.text!=='string'||!Array.isArray(p.lines))continue;const safe={id:p.id.toUpperCase(),title:p.title.slice(0,100),category:String(p.category||'Umum').slice(0,60),text:p.text.slice(0,500000),lines:p.lines.map(x=>String(x).slice(0,5000)),createdAt:Number(p.createdAt)||Date.now(),updatedAt:Number(p.updatedAt)||Date.now()};await putPack(safe);n++;}await render();status('backupMsg',`Impor selesai: ${n} paket diproses. Periksa isi sebelum digunakan.`);}catch(err){status('backupMsg','Impor gagal: '+err.message,'error');}e.target.value='';};
+$('setPin').onclick=()=>{const pin=$('adminPin').value.trim();if(pin.length<4){status('pinMsg','PIN minimal 4 karakter.','error');return;}status('pinMsg','PIN lokal tidak disimpan pada build ini karena autentikasi browser lokal tidak dapat memberikan keamanan admin yang kuat. Gunakan kontrol akses server untuk penggunaan organisasi.','warn');};
+$('unlockAdmin').onclick=()=>status('pinMsg','Build ini belum memiliki login organisasi. Mode admin lokal bukan keamanan yang dapat dipercaya.','warn');
+(async()=>{try{await openDB();await render();}catch(e){status('adminMsg','Database tidak tersedia: '+e.message,'error');}})();
+})();
+</script>
+</body>
+</html>
